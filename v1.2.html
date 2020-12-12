@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <style>
         svg circle {
-          /*fill:"#69b5a2";*/
           opacity: 0.6;
           stroke: white;
         }
@@ -16,7 +15,6 @@
           pointer-events: none;
         }
         svg .municipality {
-          //fill: #efefef;
           stroke: #fff;
         }
         svg .municipality-label {
@@ -159,7 +157,6 @@
         .enter().append('path')
           .attr('class', function(d) { console.log(); return 'municipality c' + d.properties.code })
           .attr('d', path)
-          //.style("fill", "#efefef");
           ;
     });
 
