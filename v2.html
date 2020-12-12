@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <style>
         svg circle {
-          /*fill:"#69b5a2";*/
           opacity: 0.6;
           stroke: white;
         }
@@ -16,18 +15,8 @@
           pointer-events: none;
         }
         svg .municipality {
-          //fill: #efefef;
           stroke: #fff;
         }
-        svg .municipality-label {
-          fill: #bbb;
-          font-size: 12px;
-          font-weight: 300;
-          text-anchor: middle;
-        }
-
-        svg { background-color: #eee; }
-
         svg #map text {
           color: #333;
           font-size: 10px;
@@ -58,33 +47,29 @@
           border-radius: 8px;
         }
     </style>
+	  <title>DV_A5_18011745</title>
   </head>
   <body>
     <h1>데이터시각화 과제5</h1>
     <h2>데이터사이언스학과 18011745학번 김선민</h2>
     <br>
     <h4>*가설: 올해 ‘태풍피해’ 특별재난지역으로 선포된 5지역(삼척·양양·영덕·울진·울릉)은 2개 이상의 등급이 높은 태풍의 경로 내에 있었을 것이다</h4>
-    <br>
-
-
-
     <h3>2020년 우리나라에 영향을 준 태풍 이동경로</h3>
     <form>
       <fieldset>
-                <legend>< 태풍을 선택하세요 ></legend>
-		<div>
-      <select id="mySelect" onchange="myFunction()">
-        <option>선택 항목</option>
-        <option value="5">5호 태풍 장미(SANGMI)</option>
-				<option value="8">8호 태풍 바비(BAVI)</option>
-        <option value="9">9호 태풍 마이삭(MAYSAK)</option>
-				<option value="10">10호 태풍 하이선(HAISHEN)</option>
-			</select>
-		</div>
-    </fieldset>
-	</form>
+	      <legend>< 태풍을 선택하세요 ></legend>
+		      <div>
+			      <select id="mySelect" onchange="myFunction()">
+				      <option value="5">5호 태풍 장미(SANGMI)</option>
+					<option value="8">8호 태풍 바비(BAVI)</option>
+        				<option value="9">9호 태풍 마이삭(MAYSAK)</option>
+					<option value="10">10호 태풍 하이선(HAISHEN)</option>
+			      </select>
+			</div>
+		      </fieldset>
+	      </form>
 
-  <div class="00">
+  <div>
     <table style = "border:1px solid; bgcolor:#FFFFFF; text-align: center;">
       <tr>
         <td>태풍등급</td>
@@ -105,24 +90,19 @@
       </tr>
     </table>
   </div>
-
-  <p id="demo"></p>
-
-    <div id="map">
-
-    </div>
+	    <p id="demo"></p>
+	    <div id="map"></div>
 
     <script src="http://d3js.org/d3.v3.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
 
 
     <script>
-
     function myFunction() {
       var x = document.getElementById("mySelect").value;
       var selected_value = "data/" + x + ".csv";
       document.getElementById("demo").innerHTML = "<< You selected: " + x +"호 태풍 >>";
-      d3.select("svg").remove();
+      //d3.select("svg").remove();
 
 
     var width = 1000,
@@ -157,9 +137,7 @@
           .data(features)
         .enter().append('path')
           .attr('class', function(d) { console.log(); return 'municipality c' + d.properties.code })
-          .attr('d', path)
-          //.style("fill", "#efefef");
-          ;
+          .attr('d', path);
     });
 
 
