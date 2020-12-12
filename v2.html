@@ -90,11 +90,11 @@
       </tr>
     </table>
   </div>
-	    <p id="demo"></p>
-	    <div id="map"></div>
 
     <script src="http://d3js.org/d3.v3.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
+	<p id="demo"></p>
+	<div id="map"></div>
 
 
     <script>
@@ -109,9 +109,11 @@
         height = 1200;
 
 
-    var svg = d3.select("#map").append("svg")
+    var svg = d3.select("#map")
+    	.append("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+    .style("background-color", "#48648c");
 
 
     var map = svg.append("g").attr("id", "map"),
@@ -127,8 +129,6 @@
           .translate([width/2, height/2]);
 
     var path = d3.geo.path().projection(projection);
-
-    svg.style("background-color", "#48648c")
 
 
     d3.json("data/skorea-provinces-2018-topo-simple.json", function(error, data) {
@@ -182,8 +182,7 @@
             div.transition()
               .duration(200)
               .style("opacity", .9);
-            div.html(
-                "분석시각" + "<br/>" + d.time)
+            div.html("분석시각" + "<br/>" + d.time)
               .style("left", (d3.event.pageX) + "px")
               .style("top", (d3.event.pageY - 28) + "px");
           })
