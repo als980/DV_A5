@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+        svg circle {
+          /*fill:"#69b5a2";*/
+          opacity: 0.6;
+          stroke: white;
+        }
+        svg circle:hover {
+          fill: red;
+          stroke: #333;
+        }
+        svg text {
+          pointer-events: none;
+        }
+        svg .municipality {
+          //fill: #efefef;
+          stroke: #fff;
+        }
+        svg .municipality-label {
+          fill: #bbb;
+          font-size: 12px;
+          font-weight: 300;
+          text-anchor: middle;
+        }
+
+        svg { background-color: #eee; }
+
+        svg #map text {
+          color: #333;
+          font-size: 10px;
+          text-anchor: middle;
+        }
+        svg #places text {
+          color: #777;
+          font: 10px sans-serif;
+          text-anchor: start;
+        }
+
+        #title {
+            font-family: sans-serif;
+        }
+        #title p {
+            font-size: 10pt;
+        }
+
+        div.tooltip {
+          position: absolute;
+          text-align: center;
+          width: 100px;
+          height: 35px;
+          padding: 2px;
+          font: 12px sans-serif;
+          background: lightsteelblue;
+          border: 0px;
+          border-radius: 8px;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>데이터시각화 과제5</h1>
+    <h2>데이터사이언스학과 18011745학번 김선민</h2>
+    <br>
+    <h4>*가설: 올해 ‘태풍피해’ 특별재난지역으로 선포된 5지역(삼척·양양·영덕·울진·울릉)은 2개 이상의 등급이 높은 태풍의 경로 내에 있었을 것이다</h4>
+    <br>
+
+
+
+    <h3>2020년 우리나라에 영향을 준 태풍 이동경로</h3>
+    <form>
+      <fieldset>
+                <legend>< 태풍을 선택하세요 ></legend>
+		<div>
+      <select id="mySelect" onchange="myFunction()">
+        <option>선택 항목</option>
+        <option value="5">5호 태풍 장미(SANGMI)</option>
+				<option value="8">8호 태풍 바비(BAVI)</option>
+        <option value="9">9호 태풍 마이삭(MAYSAK)</option>
+				<option value="10">10호 태풍 하이선(HAISHEN)</option>
+			</select>
+		</div>
+    </fieldset>
+	</form>
+
+  <div class="00">
+    <table style = "border:1px solid; bgcolor:#FFFFFF; text-align: center;">
+      <tr>
+        <td>태풍등급</td>
+        <td>색상</td>
+        <td>중심 최대 풍속(m/s)</td>
+      </tr>
+      <tr>
+        <td>TD</td><td><font color="#e5e81c">YELLOW</font></td><td>~16</td>
+      </tr>
+      <tr>
+        <td>TS</td><td><font color="GREEN">GREEN</font></td><td>17~24</td>
+      </tr>
+      <tr>
+        <td>STS</td><td><font color="BLUE">BLUE</font></td><td>25~32</td>
+      </tr>
+      <tr>
+        <td>TY</td><td><font color="RED">RED</font></td><td>33~</td>
+      </tr>
+    </table>
+  </div>
+
+  <p id="demo"></p>
+
+    <div id="map">
+
+    </div>
+
+    <script src="http://d3js.org/d3.v3.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+
+
+    <script>
+
+    function myFunction() {
+      var x = document.getElementById("mySelect").value;
+      var selected_value = x + ".csv";
+      document.getElementById("demo").innerHTML = "<< You selected: " + x +"호 태풍 >>";
+      d3.select("svg").remove();
+
+
+    var width = 1000,
+        height = 1200;
+
+
+    var svg = d3.select("#map").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+
+    var map = svg.append("g").attr("id", "map"),
+        places = svg.append("g").attr("id", "places");
+
+    var div = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
+      var projection = d3.geo.mercator()
+          .center([127.58, 36.0])
+          .scale(4000)
+          .translate([width/2, height/2]);
+
+    var path = d3.geo.path().projection(projection);
+
+    svg.style("background-color", "#48648c")
+
+
+    d3.json("skorea-provinces-2018-topo-simple.json", function(error, data) {
+        var features = topojson.feature(data, data.objects.skorea_provinces_2018_geo).features;
+      map.selectAll('path')
+          .data(features)
+        .enter().append('path')
+          .attr('class', function(d) { console.log(); return 'municipality c' + d.properties.code })
+          .attr('d', path)
+          //.style("fill", "#efefef");
+          ;
+    });
+
+
+      d3.csv("special_disaster_area.csv", function(data) {
+        places.selectAll("rect")
+            .data(data)
+          .enter().append("rect")
+            .attr("x", function(d) { return projection([d.x, d.y])[0] - 7.5; })
+            .attr("y", function(d) { return projection([d.x, d.y])[1]-7.5; })
+            .attr("width", 15)
+            .attr("height", 15)
+            .style("fill","#FFFFFF")
+            .style("opacity", .8);;
+
+      places.selectAll("text")
+          .data(data)
+        .enter().append("text")
+          .attr("x", function(d) { return projection([d.x, d.y])[0] + 12; })
+          .attr("y", function(d) { return projection([d.x, d.y])[1] + 5; })
+          .text(function(d){ return d.name})
+          .style("fill","#FFFFFF");
+    });
+
+
+      d3.csv(selected_value, function(data) {
+        places.selectAll("circle")
+            .data(data)
+          .enter().append("circle")
+            .attr("cx", function(d) { return projection([d.x, d.y])[0]; })
+            .attr("cy", function(d) { return projection([d.x, d.y])[1]; })
+            .attr("r", function(d){if(d.level=="LOW"){return 7}
+            else if(d.level=="TD"){return 10}
+            else if(d.level=="TS"){return 15}
+            else if(d.level=="STS"){return 27}
+            else {return 40}})
+            .style("fill", function(d){if(d.level=="LOW"){return "#ffffff"}
+            else if(d.level=="TD"){return "Yellow"}
+            else if(d.level=="TS"){return "#88fc03"}
+            else if(d.level=="STS"){return "blue"}
+            else {return "red"}})
+          .on("mouseover", function(d) {
+            div.transition()
+              .duration(200)
+              .style("opacity", .9);
+            div.html(
+                "분석시각" + "<br/>" + d.time)
+              .style("left", (d3.event.pageX) + "px")
+              .style("top", (d3.event.pageY - 28) + "px");
+          })
+          .on("mouseleave", function(d) {
+            div.transition()
+              .duration(200)
+              .style("opacity", 0);
+          });
+    });};
+
+    </script>
+  </body>
+</html>
