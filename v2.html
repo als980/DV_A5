@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <style>
         svg circle {
+          /*fill:"#69b5a2";*/
           opacity: 0.6;
           stroke: white;
         }
@@ -15,6 +16,7 @@
           pointer-events: none;
         }
         svg .municipality {
+          //fill: #efefef;
           stroke: #fff;
         }
         svg .municipality-label {
@@ -106,7 +108,7 @@
 
   <p id="demo"></p>
 
-    <div id="map1">
+    <div id="map">
 
     </div>
 
@@ -114,9 +116,8 @@
     <script src="http://d3js.org/topojson.v1.min.js"></script>
 
 
-
-
     <script>
+
     function myFunction() {
       var x = document.getElementById("mySelect").value;
       var selected_value = "data/" + x + ".csv";
@@ -128,13 +129,13 @@
         height = 1200;
 
 
-    var svg = d3.select("#map1").append("svg")
+    var svg = d3.select("#map").append("svg")
         .attr("width", width)
         .attr("height", height);
 
 
-    var map = svg.append("g").attr("id", "map1"),
-        places = svg.append("g").attr("id", "places1");
+    var map = svg.append("g").attr("id", "map"),
+        places = svg.append("g").attr("id", "places");
 
     var div = d3.select("body").append("div")
       .attr("class", "tooltip")
@@ -157,6 +158,7 @@
         .enter().append('path')
           .attr('class', function(d) { console.log(); return 'municipality c' + d.properties.code })
           .attr('d', path)
+          //.style("fill", "#efefef");
           ;
     });
 
